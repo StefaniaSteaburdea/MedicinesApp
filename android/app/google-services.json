@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "707059106926",
+    "project_id": "blindpeopleapp",
+    "storage_bucket": "blindpeopleapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:707059106926:android:f4e4b81a09398eb67ed27f",
+        "android_client_info": {
+          "package_name": "com.example.blind"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "707059106926-dftofik9kd5plah2rlu8c1hiqrubma1u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA5S1MhGOrEsOw0Ln0y6SqcQsmrz9tSPPo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "707059106926-dftofik9kd5plah2rlu8c1hiqrubma1u.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "707059106926-q07v1fdbjqbb3h54jrpkfa1a6g4gqfim.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.blind"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
