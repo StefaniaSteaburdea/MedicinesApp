@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:blind/edit.dart';
 import 'package:provider/provider.dart';
 import 'package:blind/medicine_provider.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,8 +34,20 @@ class MyHomePage extends StatefulWidget{
 
 }
 class _MyHomePageState extends State<MyHomePage>{
+   FlutterTts tts = FlutterTts();
   @override
   Widget build(BuildContext context){
+   Future<void> runTextToSpeech(String currentTtsString, double currentSpeechRate) async {
+  FlutterTts flutterTts;
+  flutterTts = new FlutterTts();
+  await flutterTts.awaitSpeakCompletion(true);
+  await flutterTts.setLanguage("en-GB");
+  await flutterTts.setVolume(1.0);
+  await flutterTts.setPitch(1.0);
+  await flutterTts.isLanguageAvailable("en-GB");
+  await flutterTts.setSpeechRate(currentSpeechRate);
+  await flutterTts.speak(currentTtsString);
+}
     return new Scaffold(
       backgroundColor: Colors.red[300],
       body:
@@ -53,8 +66,8 @@ class _MyHomePageState extends State<MyHomePage>{
                 ),   
            
            onPressed: (){
-               print('e buton');
-           },
+               runTextToSpeech("yes", 1.5);
+            } ,
            )
            ,
            bottomNavigationBar:  Container(

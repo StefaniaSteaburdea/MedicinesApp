@@ -1,14 +1,12 @@
 import 'package:blind/firestore_service.dart';
 import 'package:blind/medicine.dart';
 import 'package:flutter/material.dart';
-import 'package:uuid/uuid.dart';
 
 class MedicineProvider with ChangeNotifier{
    String _productId;
    String _name;
    String _usage;
    String _quantity;
-   var uuid=Uuid();
    final firestoreService=FirestoreService();
    //Getters
    String get productId=>_productId;
@@ -29,9 +27,13 @@ class MedicineProvider with ChangeNotifier{
      _quantity=value;
      notifyListeners();
    }
+   changeProductID(String value){
+     _productId=value;
+     notifyListeners();
+   }
    toSave(){
      if(_productId==null){
-       var newProduct=Medicine(name:name,usage:usage,quantity:quantity,productId:uuid.v4());
+       var newProduct=Medicine(name:name,usage:usage,quantity:quantity,productId:productId);
        firestoreService.medAdd(newProduct);
      }
      else

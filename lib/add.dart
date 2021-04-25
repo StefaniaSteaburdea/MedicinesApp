@@ -3,6 +3,7 @@ import 'package:blind/medicine.dart';
 import 'package:blind/medicine_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
 class MyAdd extends StatefulWidget{
   final Medicine medicine;
   MyAdd([this.medicine]);
@@ -116,6 +117,8 @@ class _MyAddState extends State<MyAdd>{
                    height: 50,
                    minWidth: 60,
                    onPressed: (){
+                     var x=Uuid().v4();
+                     medicineProvider.changeProductID(x);
                      medicineProvider.toSave();
                       Navigator.of(context)
                     .push(
