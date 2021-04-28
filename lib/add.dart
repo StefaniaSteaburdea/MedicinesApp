@@ -6,7 +6,8 @@ import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 class MyAdd extends StatefulWidget{
   final Medicine medicine;
-  MyAdd([this.medicine]);
+  final String Nuid;
+  MyAdd([this.medicine,this.Nuid]);
   @override
   _MyAddState createState()=>new _MyAddState();
 }
@@ -117,8 +118,8 @@ class _MyAddState extends State<MyAdd>{
                    height: 50,
                    minWidth: 60,
                    onPressed: (){
-                     var x=Uuid().v4();
-                     medicineProvider.changeProductID(x);
+                     if(widget.medicine==null)
+                     medicineProvider.changeProductID(widget.Nuid);
                      medicineProvider.toSave();
                       Navigator.of(context)
                     .push(

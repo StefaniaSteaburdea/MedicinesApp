@@ -5,7 +5,8 @@ import 'package:blind/add.dart';
 import 'package:provider/provider.dart';
 
 class MyEdit extends StatefulWidget{
-  
+  final String Nuid;
+  MyEdit([this.Nuid]);
   @override
   _MyEditState createState()=>new _MyEditState();
 }
@@ -30,7 +31,7 @@ class _MyEditState extends State<MyEdit>{
           Navigator.of(context)
                     .push(
                       MaterialPageRoute(
-                        builder: (context)=>MyAdd()
+                        builder: (context)=>MyAdd(null,widget.Nuid)
                         )
                     );
         },
@@ -117,7 +118,7 @@ class _MyEditState extends State<MyEdit>{
                                                      Navigator.of(context)
                                                       .push(
                                                         MaterialPageRoute(
-                                                          builder: (context)=>MyEdit()
+                                                          builder: (context)=>MyEdit(widget.Nuid)
                                                         ));
                                                    }),
                                             ],
