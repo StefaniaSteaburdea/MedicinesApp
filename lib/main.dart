@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:blind/BluetoothEnable.dart';
@@ -51,7 +52,8 @@ class _MyHomePageState extends State<MyHomePage>{
   BluetoothConnection connection;
   List<_Message> messages = [];
   String _messageBuffer = '';
-  String sw='';
+  String sw="1";
+  String code='';
   final TextEditingController textEditingController =
       new TextEditingController();
   final ScrollController listScrollController = new ScrollController();
@@ -68,7 +70,7 @@ class _MyHomePageState extends State<MyHomePage>{
   await flutterTts.setVolume(1.0);
   await flutterTts.setPitch(1.0);
   await flutterTts.isLanguageAvailable("en-GB");
-  await flutterTts.setSpeechRate(currentSpeechRate);
+  await flutterTts.setSpeechRate(1.0);
   await flutterTts.speak(currentTtsString);
 }
   @override
@@ -76,31 +78,50 @@ class _MyHomePageState extends State<MyHomePage>{
     super.initState();
     if(widget.server!=null)
     {
-    BluetoothConnection.toAddress(widget.server.address).then((_connection) {
-      print('Connected to the device');
+    BluetoothConnection.toAddress(widget.server.address).then((_connection) async {
+      runTextToSpeech('Connected to the device'+widget.server.name,1.2);
       connection = _connection;
       setState(() {
         isConnecting = false;
         isDisconnecting = false;
       });
-
+      connection.output.add(utf8.encode('Hello!'));
+      await connection.output.allSent;
       connection.input.listen(_onDataReceived).onDone(() {
 
         if (isDisconnecting) {
-          runTextToSpeech("Disconnecting locally!",1.5);
+          runTextToSpeech("Disconnecting locally!",1.2);
         } else {
-          runTextToSpeech("Disconnected remotely!",1.5);
+          runTextToSpeech("Disconnected remotely!",1.2);
         }
         if (this.mounted) {
           setState(() {});
         }
       });
     }).catchError((error) {
-      runTextToSpeech('Cannot connect, exception occured',1.5);
+      runTextToSpeech('Cannot connect, exception occured',1.2);
       print(error);
     });
   }}
 
+   void _sendMessage(String text) async {
+     //text = text.trim();
+     textEditingController.clear();
+     if (text.length > 0) {
+       try {
+         connection.output.add(utf8.encode(text + "\r\n"));
+         await connection.output.allSent;
+         Future.delayed(Duration(milliseconds: 333)).then((_) {
+           listScrollController.animateTo(
+               listScrollController.position.maxScrollExtent,
+               duration: Duration(milliseconds: 333),
+               curve: Curves.easeOut);
+         });
+       } catch (e) {
+         // Ignore error, but notify state
+         setState(() {});
+       }
+     }}
 void _onDataReceived(Uint8List data) {
     // Allocate buffer for parsed data
     int backspacesCounter = 0;
@@ -152,29 +173,30 @@ void _onDataReceived(Uint8List data) {
     }
 
     //read the first command
-    
-     if(sw==''&&_messageBuffer!='')
-             {
-               if(_messageBuffer=="triangle") {
+   // runTextToSpeech(_messageBuffer, 1.2);
+
+               if(_messageBuffer=="triunghi") {
                     sw="1";
-                    runTextToSpeech("triangle", 1.5);
+                    _messageBuffer='';
+                    runTextToSpeech("Name", 1.2);
                   }
                 else
                  if(_messageBuffer=="twirl"){
                     sw="2";
-                    runTextToSpeech("twirl", 1.5);
+                    _messageBuffer='';
+                    runTextToSpeech("Usage", 1.2);
                     }
                  else
                  if(_messageBuffer=="left-right"){
                     sw="3";
-                    runTextToSpeech("left-right", 1.5);
+                    _messageBuffer='';
+                    runTextToSpeech("Dose", 1.2);
                     }
                  else{
-                     sw=_messageBuffer;
-                     runTextToSpeech("read", 1.5);
+                     code=_messageBuffer;
+                     _messageBuffer='';
+                     runTextToSpeech("Code", 1.2);
                  }
-                   
-             }
             
   }
   @override
@@ -226,15 +248,14 @@ void _onDataReceived(Uint8List data) {
            
            onPressed: (){
                  if(sw=="1")
-                 runTextToSpeech(readName(medicines,_messageBuffer),1.5);
+                 runTextToSpeech(readName(medicines,code),1.2);
                  else
                    if(sw=="2")
-                    runTextToSpeech(readUsage(medicines,_messageBuffer),1.5);
+                    runTextToSpeech(readUsage(medicines,code),1.2);
                     else 
                       if(sw=="3")
-                     runTextToSpeech(readDose(medicines,_messageBuffer),1.5);
-                     else 
-                       runTextToSpeech("No movement detected",1.5);
+                     runTextToSpeech(readDose(medicines,code),1.2);
+                     
             } ,
            )
            ,
@@ -244,20 +265,17 @@ void _onDataReceived(Uint8List data) {
                  MaterialButton(
                    height: 80,
                    minWidth: (MediaQuery.of(context).size.width*1/2),
-                   onPressed:(){
-                     runTextToSpeech("Medicines management", 1.5);
-                     if(sw==_messageBuffer)
-                     Navigator.of(context)
-                    .push(
-                      MaterialPageRoute(
-                        builder: (context)=>MyEdit(_messageBuffer)
-                        )
-                    );
-                    else
+                   onPressed:()async{
+                     await connection.finish();
+                     setState(() {
+                       isConnecting = false;
+                       isDisconnecting = true;
+                     });
+                     runTextToSpeech("Medicines management", 1.2);
                     Navigator.of(context)
                     .push(
                       MaterialPageRoute(
-                        builder: (context)=>MyEdit()
+                        builder: (context)=>MyEdit(widget.server)
                         )
                     );
                    },
@@ -272,7 +290,7 @@ void _onDataReceived(Uint8List data) {
                    height: 80,
                    minWidth: (MediaQuery.of(context).size.width*1/2),
                    onPressed:(){
-                     runTextToSpeech("Bluetooth connection", 1.5);
+                     runTextToSpeech("Bluetooth connection", 1.2);
                      Navigator.of(context)
                     .push(
                       MaterialPageRoute(

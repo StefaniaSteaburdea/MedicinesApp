@@ -2,11 +2,12 @@ import 'package:blind/medicine.dart';
 import 'package:blind/medicine_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:blind/add.dart';
+import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:provider/provider.dart';
 
 class MyEdit extends StatefulWidget{
-  final String Nuid;
-  MyEdit([this.Nuid]);
+  final BluetoothDevice server;
+  MyEdit([this.server]);
   @override
   _MyEditState createState()=>new _MyEditState();
 }
@@ -31,7 +32,7 @@ class _MyEditState extends State<MyEdit>{
           Navigator.of(context)
                     .push(
                       MaterialPageRoute(
-                        builder: (context)=>MyAdd(null,widget.Nuid)
+                        builder: (context)=>MyAdd(null,widget.server)
                         )
                     );
         },
@@ -47,10 +48,15 @@ class _MyEditState extends State<MyEdit>{
                   child: ListView(
                       scrollDirection: Axis.vertical,
                       children: <Widget>[
+                        Row(
+                          children: [
+                            Text("\nScroll to edit/delete --->\n",style: TextStyle(fontSize: 20),)
+                          ],
+                        ),
                         Container(
                             width: 300,
                             height:
-                                (MediaQuery.of(context).size.height * 2 / 3),
+                                (MediaQuery.of(context).size.height * 3/ 4),
                             child: ListView(
                                 scrollDirection: Axis.horizontal,
                                 children: <Widget>[
@@ -106,7 +112,7 @@ class _MyEditState extends State<MyEdit>{
                                                       Navigator.of(context)
                                                       .push(
                                                         MaterialPageRoute(
-                                                          builder: (context)=>MyAdd(medicines[index])
+                                                          builder: (context)=>MyAdd(medicines[index],widget.server)
                                                           )
                                                       );
                                                    }),
@@ -118,7 +124,7 @@ class _MyEditState extends State<MyEdit>{
                                                      Navigator.of(context)
                                                       .push(
                                                         MaterialPageRoute(
-                                                          builder: (context)=>MyEdit(widget.Nuid)
+                                                          builder: (context)=>MyEdit(widget.server)
                                                         ));
                                                    }),
                                             ],
