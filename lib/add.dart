@@ -103,7 +103,7 @@ class _MyAddState extends State<MyAdd>{
       });
     }
   }
-  void _onDataReceived(Uint8List data) {
+  void _onDataReceived(Uint8List data) async{
     // Allocate buffer for parsed data
     int backspacesCounter = 0;
     data.forEach((byte) {
@@ -154,6 +154,12 @@ class _MyAddState extends State<MyAdd>{
         if(valid(code,newList)!=0){
              x.changeProductID(code);
         x.toSave();
+        if(connection!=null)
+                     {await connection.finish();
+                     setState(() {
+                       isConnecting = false;
+                       isDisconnecting = true;
+                     });}
         Navigator.of(context)
             .push(
             MaterialPageRoute(
@@ -172,7 +178,31 @@ class _MyAddState extends State<MyAdd>{
    final medicines=Provider.of<List<Medicine>>(context);
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(backgroundColor: Colors.brown[700], title: Text('Add medicines'),
+      appBar: AppBar(
+        backgroundColor: Colors.brown[700], title: Text('Add medicines'),
+        automaticallyImplyLeading : false,
+        actions:  <Widget>[
+          Padding(
+            padding: EdgeInsets.only(left: 10),
+            child: IconButton(
+                   icon: Icon( Icons.arrow_back,),
+                    onPressed:()async{
+                      if(connection!=null)
+                     {await connection.finish();
+                     setState(() {
+                       isConnecting = false;
+                       isDisconnecting = true;
+                     });}
+                    Navigator.of(context)
+                      .push(
+                       MaterialPageRoute(
+                         builder: (context)=>MyEdit(widget.server)
+                          )
+                          );
+                          }),
+            )
+
+        ]
       ),
       body:Center(
         child: ListView(
@@ -235,12 +265,18 @@ class _MyAddState extends State<MyAdd>{
                child:MaterialButton(
                    height: 50,
                    minWidth: 60,
-                   onPressed: (){
+                   onPressed: ()async{
                      
                        if(widget.medicine==null&&code!='') {
                          if(valid(code,medicines)!=0){
                          medicineProvider.changeProductID(code);
                          medicineProvider.toSave();
+                         if(connection!=null)
+                     {await connection.finish();
+                     setState(() {
+                       isConnecting = false;
+                       isDisconnecting = true;
+                     });}
                          Navigator.of(context)
                              .push(
                              MaterialPageRoute(
@@ -253,6 +289,12 @@ class _MyAddState extends State<MyAdd>{
                        else
                        if(widget.medicine!=null){
                          medicineProvider.toSave();
+                         if(connection!=null)
+                     {await connection.finish();
+                     setState(() {
+                       isConnecting = false;
+                       isDisconnecting = true;
+                     });}
                          Navigator.of(context)
                              .push(
                              MaterialPageRoute(

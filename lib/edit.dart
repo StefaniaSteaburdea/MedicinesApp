@@ -1,3 +1,4 @@
+import 'package:blind/main.dart';
 import 'package:blind/medicine.dart';
 import 'package:blind/medicine_provider.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +19,27 @@ class _MyEditState extends State<MyEdit>{
     final medicineProvider=Provider.of<MedicineProvider>(context);
     return new Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(backgroundColor: Colors.brown[700], title: Text('Edit medicines'),),
+      appBar: AppBar(
+        backgroundColor: Colors.brown[700],
+        title: 
+          Text('Edit medicines'),
+        automaticallyImplyLeading : false,
+        actions:  <Widget>[
+          Padding(
+            padding: EdgeInsets.only(right: 10),
+            child: IconButton(
+                   icon: Icon(
+                    Icons.arrow_back,),
+                    onPressed:(){
+                    Navigator.of(context)
+                      .push(
+                       MaterialPageRoute(
+                         builder: (context)=>MyHomePage(widget.server)
+                          )
+                          );
+                          }),),
+        ]
+      ),
       bottomNavigationBar: Container(
         height: 100,
         child: IconButton(

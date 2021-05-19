@@ -52,7 +52,7 @@ class _MyHomePageState extends State<MyHomePage>{
   BluetoothConnection connection;
   List<_Message> messages = [];
   String _messageBuffer = '';
-  String sw="1";
+  String sw="2";
   String code='';
   final TextEditingController textEditingController =
       new TextEditingController();
@@ -175,12 +175,7 @@ void _onDataReceived(Uint8List data) {
     //read the first command
    // runTextToSpeech(_messageBuffer, 1.2);
 
-               if(_messageBuffer=="triunghi") {
-                    sw="1";
-                    _messageBuffer='';
-                    runTextToSpeech("Name", 1.2);
-                  }
-                else
+              
                  if(_messageBuffer=="twirl"){
                     sw="2";
                     _messageBuffer='';
@@ -215,7 +210,7 @@ void _onDataReceived(Uint8List data) {
           for(i=0;i<med.length;i++)
           {
             if(med[i].productId==uid)
-              return med[i].usage;
+              return med[i].name+" "+med[i].usage;
           }
           return "Not found";
         }
@@ -224,7 +219,7 @@ void _onDataReceived(Uint8List data) {
           for(i=0;i<med.length;i++)
           {
             if(med[i].productId==uid)
-              return med[i].quantity;
+              return med[i].name+" "+med[i].quantity;
           }
           return "Not found";
         }
@@ -247,15 +242,16 @@ void _onDataReceived(Uint8List data) {
                 ),   
            
            onPressed: (){
-                 if(sw=="1")
-                 runTextToSpeech(readName(medicines,code),1.2);
-                 else
-                   if(sw=="2")
+                 
+                   if(sw=="2"){
+                    //runTextToSpeech(readName(medicines,code),1.2);
                     runTextToSpeech(readUsage(medicines,code),1.2);
+                    }
                     else 
-                      if(sw=="3")
-                     runTextToSpeech(readDose(medicines,code),1.2);
-                     
+                      if(sw=="3"){
+                        // runTextToSpeech(readName(medicines,code),1.2);
+                         runTextToSpeech(readDose(medicines,code),1.2);
+                      }
             } ,
            )
            ,
@@ -266,11 +262,12 @@ void _onDataReceived(Uint8List data) {
                    height: 80,
                    minWidth: (MediaQuery.of(context).size.width*1/2),
                    onPressed:()async{
-                     await connection.finish();
+                     if(connection!=null)
+                     {await connection.finish();
                      setState(() {
                        isConnecting = false;
                        isDisconnecting = true;
-                     });
+                     });}
                      runTextToSpeech("Medicines management", 1.2);
                     Navigator.of(context)
                     .push(
